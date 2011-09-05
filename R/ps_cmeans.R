@@ -20,3 +20,17 @@ Est.Depth <- function(n, iter=5)
 	
 	return(list(cmeans=cmeans, keep=keep))
 }
+
+###################################################
+#		Esimate sequencing depth
+###################################################
+PS.Est.Depth <- function(n, iter=5, ct.sum=5, ct.mean=0.5)
+{
+	n <- PS.Filter(dat=list(n=n), ct.sum=ct.sum, ct.mean=ct.mean)$n
+	
+	seq.depth <- Est.Depth(n=n, iter=iter)$cmeans
+	
+	seq.depth <- exp(log(seq.depth) - mean(log(seq.depth)))
+	
+	return(seq.depth)
+}

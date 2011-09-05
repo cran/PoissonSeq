@@ -6,6 +6,9 @@ PS.Main <- function(dat, para=list())
 	cat("Checking parameters of para...", fill=T)
 	para <- Check.Argu.Para(para, dat)
 	
+	### filter out genes that has too small counts
+	dat <- PS.Filter(dat, ct.sum=para$ct.sum, ct.mean=para$ct.mean)
+	
 	### begin calculation
 	time_st <- Sys.time()
 	
@@ -27,12 +30,14 @@ PS.Main <- function(dat, para=list())
 	
 	# calculate the score statistics
 	cat("\nCalculating score statistics and permutated score statistics...\n")
+	set.seed(para$seed)
 	ps.obj <- Score.Stat(dat=dat, para=para)
 	
 	# estimate FDR
 	cat("\nCalculating FDR...\n")
-	res <- PS.FDR(ps.obj=ps.obj, nvals=para$nvals)
-	res$seq.depth <- seq.depth
+	fdr.res <- PS.FDR(ps.obj=ps.obj)
+	
+	res <- PS.Sum(dat=dat, fdr.res=fdr.res, seq.depth=seq.depth)
 	
 	time_ed <- Sys.time()
 	print(time_ed - time_st)
@@ -45,6 +50,22 @@ PS.Main <- function(dat, para=list())
 ############################################################
 Check.Argu.Dat <- function(dat)
 {
+	if (is.null(dat$n))
+	{
+		stop("the data matrix dat$n must be specified!")
+	}
+	
+	if (is.null(dat$y))
+	{
+		stop("the outcome vector dat$y must be specified!")
+	}
+	
+	if (is.null(dat$type))
+	{
+		stop("the outcome type dat$type must be specified!")
+	}
+	
+	dat$n <- as.matrix(dat$n)
 	if (!is.matrix(dat$n) | !is.numeric(dat$n))
 	{
 		stop('n must be a numeric matrix!')
@@ -67,9 +88,24 @@ Check.Argu.Dat <- function(dat)
 	
 	dat$type <- match.arg(dat$type, c('twoclass', 'multiclass', 'quant'), several.ok = FALSE)
 	
+	if (is.null(dat$pair))
+	{
+		dat$pair <- F
+	}
+	
 	if (!is.logical(dat$pair))
 	{
-		stop('pair must be logical!')
+		stop('pair must be logical (either TRUE of FALSE)!')
+	}
+	
+	if (is.null(dat$gname))
+	{
+		dat$gname <- 1 : nrow(dat$n)
+	}
+	
+	if (length(dat$gname) != nrow(dat$n))
+	{
+		stop("Length of dat$gname must equal the number of genes nrow(dat$n)!")
 	}
 	
 	return(dat)
@@ -102,17 +138,6 @@ Check.Argu.Para <- function(para, dat)
 		}
 	}
 	
-	if (is.null(para$nvals))
-	{
-		para$nvals <- nrow(dat$n)
-	} else
-	{
-		if (!is.numeric(para$nvals) | para$nvals <= 0)
-		{
-			stop('nvals must be a positive integer!')
-		}
-	}
-	
 	if (is.null(para$div))
 	{
 		para$div <- 10
@@ -127,6 +152,31 @@ Check.Argu.Para <- function(para, dat)
 	if (is.null(para$pow.file))
 	{
 		para$pow.file <- "pow.txt"
+	}
+	
+	if (is.null(para$ct.sum))
+	{
+		para$ct.sum <- 5
+	}
+	
+	if (!is.numeric(para$ct.sum))
+	{
+		stop("para$ct.sum must be numeric!")
+	}
+	
+	if (is.null(para$ct.mean))
+	{
+		para$ct.mean <- 0.5
+	}
+	
+	if (!is.numeric(para$ct.mean))
+	{
+		stop("para$ct.mean must be numeric!")
+	}
+	
+	if (is.null(para$seed))
+	{
+		para$seed <- 10
 	}
 	
 	return(para)

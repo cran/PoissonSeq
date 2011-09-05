@@ -1,7 +1,7 @@
 ############################################################
 #		Get false discovery genes
 ############################################################
-PS.FDR <- function(ps.obj, nvals)
+PS.FDR <- function(ps.obj)
 {
 	SMALL.VAL <- 1e-8
 	
@@ -10,6 +10,7 @@ PS.FDR <- function(ps.obj, nvals)
 	### order the statistics
 	tt <- sort(abs(ps.obj$tt))	# from most insig to most sig
 	ng <- length(tt)
+	nvals <- ng
 	
 	### get the dels
 	dels <- Get.Dels(tt, nvals)
