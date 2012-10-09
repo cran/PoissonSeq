@@ -45,13 +45,15 @@ PS.Sum <- function(dat, fdr.res, seq.depth, trans)
 	{
 		if (trans)
 		{
-			exp.1 <- rowSums(dat$n.ori[, dat$y==1]) / sum(seq.depth[dat$y==1])
-			exp.2 <- rowSums(dat$n.ori[, dat$y==2]) / sum(seq.depth[dat$y==2])
+			n.scaled <- scale(dat$n.ori, center=F, scale=seq.depth)
 		} else
 		{
-			exp.1 <- rowSums(dat$n[, dat$y==1]) / sum(seq.depth[dat$y==1])
-			exp.2 <- rowSums(dat$n[, dat$y==2]) / sum(seq.depth[dat$y==2])
+			n.scaled <- scale(dat$n, center=F, scale=seq.depth)
 		}
+		
+		exp.1 <- rowMeans(n.scaled[, dat$y==1])
+		exp.2 <- rowMeans(n.scaled[, dat$y==2])
+
 		log.fc <- log(exp.2 / exp.1)
 		res.table <- cbind(res.table, log.fc=log.fc[fdr.res$sig.ord])
 	}

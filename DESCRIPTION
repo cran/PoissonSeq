@@ -2,7 +2,7 @@ Package: PoissonSeq
 Type: Package
 Title: Significance analysis of sequencing data based on a Poisson log
         linear model
-Version: 1.1.1
+Version: 1.1.2
 Date: 2012-10-9
 Depends: R(>= 2.10),combinat,splines
 Author: Jun Li
@@ -19,11 +19,11 @@ Description: This package implements a method for normalization,
         false discovery rate using a modified version of permutation
         plug-in method. A more detailed instruction as well as sample
         data is available at
-        http://www.stanford.edu/~junli07/research.html.  In Version
-        1.1.1, we changed the way of calculating log foldchange for
+        http://www.stanford.edu/~junli07/research.html.  In this
+        version, we changed the way of calculating log foldchange for
         two-class data. The FDR estimation part remains unchanged.
 License: GPL (>= 2)
 LazyLoad: yes
-Packaged: 2012-10-09 17:48:08 UTC; jli9
+Packaged: 2012-10-10 04:33:20 UTC; jli9
 Repository: CRAN
-Date/Publication: 2012-10-09 20:04:35
+Date/Publication: 2012-10-10 15:36:34
