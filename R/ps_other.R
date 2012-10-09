@@ -20,7 +20,7 @@ PS.Filter <- function(dat, ct.sum=5, ct.mean=0.5)
 ############################################################
 #		Summarize results
 ############################################################
-PS.Sum <- function(dat, fdr.res, seq.depth)
+PS.Sum <- function(dat, fdr.res, seq.depth, trans)
 {
 	### sort nc and fdr
 	tt <- sort(abs(fdr.res$tt), decreasing=T)
@@ -43,8 +43,15 @@ PS.Sum <- function(dat, fdr.res, seq.depth)
 	### get fold change for two class data
 	if (dat$type == "twoclass")
 	{
-		exp.1 <- rowSums(dat$n[, dat$y==1]) / sum(seq.depth[dat$y==1])
-		exp.2 <- rowSums(dat$n[, dat$y==2]) / sum(seq.depth[dat$y==2])
+		if (trans)
+		{
+			exp.1 <- rowSums(dat$n.ori[, dat$y==1]) / sum(seq.depth[dat$y==1])
+			exp.2 <- rowSums(dat$n.ori[, dat$y==2]) / sum(seq.depth[dat$y==2])
+		} else
+		{
+			exp.1 <- rowSums(dat$n[, dat$y==1]) / sum(seq.depth[dat$y==1])
+			exp.2 <- rowSums(dat$n[, dat$y==2]) / sum(seq.depth[dat$y==2])
+		}
 		log.fc <- log(exp.2 / exp.1)
 		res.table <- cbind(res.table, log.fc=log.fc[fdr.res$sig.ord])
 	}

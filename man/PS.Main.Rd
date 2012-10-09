@@ -56,9 +56,9 @@
  	\item{log.fc}{Estimated log fold change of the genes. Only available for twoclass outcomes.}
 }
 \references{
- Li J, Witten DM, Johnstone I, Tibshirani R (2011).
+ Li J, Witten DM, Johnstone I, Tibshirani R (2012).
  Normalization, testing, and false discovery rate estimation for RNA-sequencing data.
- To appear, Biostatistics.
+ Biostatistics 13(3): 523-38.
 }
 \author{
  Jun Li.

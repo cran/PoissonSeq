@@ -13,14 +13,14 @@ PS.Main <- function(dat, para=list())
 	time_st <- Sys.time()
 	
 	### estimate sequencing depth
-	seq.depth <- Est.Depth(dat$n)$cmeans
-	Display.Warning(dat, seq.depth)
-	
+	seq.depth <- Est.Depth(dat$n)$cmeans	# This seq depth is for the original data
+	#Display.Warning(dat, seq.depth)
+
 	# doing order transformation
 	if (para$trans)
 	{
-		cat("\nDoing order transformation...\n")
 		dat$n.ori <- dat$n
+		cat("\nDoing order transformation...\n")
 		dat$n <- Trans.Data(n=dat$n, div=para$div, 
 			pow.file=para$pow.file)
 	} else
@@ -37,7 +37,7 @@ PS.Main <- function(dat, para=list())
 	cat("\nCalculating FDR...\n")
 	fdr.res <- PS.FDR(ps.obj=ps.obj)
 	
-	res <- PS.Sum(dat=dat, fdr.res=fdr.res, seq.depth=seq.depth)
+	res <- PS.Sum(dat=dat, fdr.res=fdr.res, seq.depth=seq.depth, trans=para$trans)
 	
 	time_ed <- Sys.time()
 	print(time_ed - time_st)
